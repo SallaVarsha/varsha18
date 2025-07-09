@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Cascading Dropdown Example</title>
+</head>
+<body>
+    <h1>Cascading Dropdown</h1>
+
+    <form id="form">
+        <!-- Department -->
+        <br><div class="form-control">
+            <label for="department">Department</label>
+            <select name="department" id="department" onchange="updateCourses()">
+                <option value="">Select Department</option>
+                <option value="BSCs">BSCs</option>
+                <option value="B.Com">B.Com</option>
+                <option value="MCA">MCA</option>
+                <option value="MBA">MBA</option>
+            </select>
+        </div>
+
+        <!-- Course -->
+        <br><div class="form-control">
+            <label for="course">Course</label>
+            <select name="course" id="course">
+                <option value="">Select Course</option>
+               <option value="Java">Java</option>
+                <option value="Python">Python</option>
+                <option value="HTML">HTML</option>
+                <option value="CSS">CSS</option>
+            </select>
+        </div>
+
+        <!-- Student/Faculty -->
+        <br><div class="form-control">
+            <label for="status">Student/Faculty</label>
+            <select name="status" id="status">
+                <option value="registered">Registered</option>
+                <option value="not-registered">Not Registered</option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <br><button type="submit">Submit</button>
+    </form>
+
+    <script>
+        const courseOptions = {
+            BSCs: ["Physics", "Chemistry", "Biology", "Computer Science"],
+            "B.Com": ["Accounting", "Finance", "Taxation"],
+            MCA: ["Java", "Python", "Web Development"],
+            MBA: ["HR", "Marketing", "Finance", "Operations"]
+        };
+
+        function updateCourses() {
+            const departmentSelect = document.getElementById("department");
+            const courseSelect = document.getElementById("course");
+            const selectedDept = departmentSelect.value;
+
+            // Clear previous options
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+
+            if (courseOptions[selectedDept]) {
+                courseOptions[selectedDept].forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

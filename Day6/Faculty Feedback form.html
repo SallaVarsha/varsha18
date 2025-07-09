@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Faculty Feedback Form</title>
+  <style>
+    body {
+      background-color: pink;
+      font-family: Verdana;
+      text-align: center;
+    }
+    form {
+      background-color: skyblue;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px 20px;
+      box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+    .form-control {
+      text-align: left;
+      margin-bottom: 25px;
+    }
+    .form-control label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .form-control input,
+    .form-control select,
+    .form-control textarea {
+      border: 1px solid #777;
+      border-radius: 2px;
+      font-family: inherit;
+      padding: 10px;
+      display: block;
+      width: 95%;
+    }
+    .form-control input[type="radio"],
+    .form-control input[type="checkbox"] {
+      display: inline-block;
+      width: auto;
+    }
+    button {
+      background-color: #05c46b;
+      border: 1px solid #777;
+      border-radius: 2px;
+      font-family: inherit;
+      font-size: 21px;
+      display: block;
+      width: 100%;
+      margin-top: 50px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Faculty Feedback Form</h1>
+  <form id="feedbackForm">
+    <div class="form-control">
+      <label for="facultyName">Faculty Name</label>
+      <input type="text" id="facultyName" placeholder="Enter your name" />
+    </div>
+    <div class="form-control">
+      <label for="trainingAttendance">Training Attendance</label>
+      <select id="trainingAttendance">
+        <option value="Java Full stack">Java Full stack</option>
+        <option value="Python">Python</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label for="overallRating">Overall Rating</label>
+      <select id="overallRating">
+        <option value="Excellent">Excellent</option>
+        <option value="Good">Good</option>
+        <option value="Average">Average</option>
+        <option value="Poor">Poor</option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label for="tipsCovered">Tips Covered</label>
+      <select id="tipsCovered">
+        <option value="Content Quality">Content Quality</option>
+        <option value="Delivery">Delivery</option>
+        <option value="Interaction">Interaction</option>
+        <option value="Relevance">Relevance</option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label for="comment">Any comments or suggestions</label>
+      <textarea id="comment" placeholder="Enter your comment here"></textarea>
+    </div>
+    <button type="submit">Submit Feedback</button>
+  </form>
+
+  <script>
+    document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevents the default form submission
+      alert('Thank you! Your feedback has been submitted.');
+      this.reset(); // Resets the form fields
+    });
+  
