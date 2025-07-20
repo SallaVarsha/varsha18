@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ canteen.name }}</title>
+</head>
+<body>
+    <h1>{{ canteen.name }}</h1>
+    {% if canteen.logo %}
+        <img src="{{ canteen.logo.url }}" alt="{{ canteen.name }}" style="height: 100px;">
+    {% endif %}
+
+    <h2>Menu products</h2>
+    {% for product in canteen.menu_products.all %}
+        <div style="border: 1px solid #ccc; padding: 10px;">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="height: 80px;">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Rs {{ product.price }}</p>
+        </div>
+    {% empty %}
+        <p>No products available.</p>
+    {% endfor %}
+
+    <a href="/">← Back to all canteens</a>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>MOTHER THERESA INSTITUTION</title>
+    <style>
+        img { max-width: 150px; }
+        .product { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1><u>MOTHER THERESA INSTITUTION</u></h1>
+   <h1>Canteen</h1>
+    {% for product in products %}
+        <div class="product">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+            <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
+            <p>${{ product.price }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
+

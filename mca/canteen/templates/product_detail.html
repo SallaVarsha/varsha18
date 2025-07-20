@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+</head>
+<body>
+<style>
+ /* optional: hide print button while printing */
+      @media print{
+     .no-print{
+    display: none;
+}
+}
+</style>
+    <h1>{{ product.name }}</h1>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <p>{{ product.description }}</p>
+    <p>Price: Rs{{ product.price }}</p>
+    <a href="/">Back to Products</a>
+<button onclick="window.print()" class="no-print">Print this page</button>
+</body>
+</html>
