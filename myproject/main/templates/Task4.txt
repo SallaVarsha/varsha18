@@ -1,0 +1,532 @@
+Task: CRUD operation into Employee,Faculty,Student Table
+
+Step 1: Set Up Your Django Project
+Make sure you have Django installed. If not, you can install it using pip:
+
+pip install django
+
+Create a new Django project: django-admin startproject myproject
+
+Navigate into your project directory: cd myproject
+
+Step 2: Create a Django App : python manage.py startapp myapp
+
+
+Step 3: Define Models
+Open myapp/models.py and define your data models. 
+# myapp/models.py
+from django.db import models
+class StudentModel(models.Model):  
+    name = models.CharField(max_length=30)  
+    course = models.CharField(max_length=30)
+    ht_no= models.CharField(max_length=10, unique=True)
+    mobile = models.CharField(max_length=10, unique=True)  
+    pov=models.CharField(max_length=9)
+  
+    def __str__(self):  
+        return (self.name+' '+ self.course)
+class FacultyModel(models.Model):  
+    name = models.CharField(max_length=30)  
+    subject = models.CharField(max_length=30)  
+    mobile = models.CharField(max_length=10, unique=True)  
+    email = models.EmailField()  
+  
+    def __str__(self):  
+        return (self.name)
+class EmployeeModel(models.Model):  
+    first_name = models.CharField(max_length=30)  
+    last_name = models.CharField(max_length=30)  
+    mobile = models.CharField(max_length=10, unique=True)  
+    email = models.EmailField()  
+  
+    def __str__(self):  
+        return (self.first_name+' '+ self.last_name)
+
+Step 4: Register Models to Admin
+Open myapp/admin.py and register your data models. 
+# myapp/admin.py
+from django.contrib import admin
+from .models import EmployeeModel
+from .models import FacultyModel
+from .models import StudentModel
+admin.site.register(EmployeeModel)
+admin.site.register(FacultyModel)
+admin.site.register(StudentModel)
+
+
+Step 5:  Register youy app to your project.
+# myproject/settings.py
+INSTALLED_APPS = [
+    'myapp',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+Step 6: Migrate Your Database to create Database Tables
+Run migrations to create database tables for your models:
+This will create the necessary database tables (Employee ) 
+
+python manage.py makemigrations myapp
+python manage.py migrate
+
+Step 7: Create SuperUser: python manage.py createsuperuser
+UserName: test
+Email: a@b.com
+Password: 123
+Confirm Password: 123
+Press "y" to ignore password validation
+
+Step 8: Create a new python file forms.py in your app.
+# myapp/forms.py
+from django.forms import fields  
+from .models import EmployeeModel
+from .models import FacultyModel
+from .models import StudentModel
+from django import forms  
+class EmployeeForm(forms.ModelForm):  
+    class Meta:  
+        model = EmployeeModel  # To specify the model to be used to create form
+        fields = '__all__'  # It includes all the fields of model
+  
+class FacultyForm(forms.ModelForm):  
+    class Meta:  
+        model = FacultyModel  # To specify the model to be used to create form
+        fields = '__all__'  # It includes all the fields of model
+        
+class StudentForm(forms.ModelForm):  
+    class Meta:  
+        model = StudentModel  # To specify the model to be used to create form
+        fields = '__all__'  # It includes all the fields of model
+
+Step 9: Write your business logics as function in Views 
+Define views in myapp/views.py for handling data insert & view operations. 
+# myapp/views.py
+from django.shortcuts import render
+from django.http import HttpResponse 
+from .models import EmployeeModel
+from .models import FacultyModel
+from .models import StudentModel
+from .forms import EmployeeForm
+from .forms import FacultyForm
+from .forms import StudentForm
+from django.template import loader
+#display form & save data  typed in form
+def display_home(request):
+    return render(request, "master.html")  
+    
+def insert_faculty(request):
+    context ={}# dictionary for initial data with field names as keys
+    ob_form = FacultyForm(request.POST or None)
+    if ob_form.is_valid():
+        ob_form.save()
+        return HttpResponse("Data Saved")
+    context['form']= ob_form
+    return render(request, "insert_faculty.html", context)  
+#view employee data
+def view_faculty(request):
+    ob=FacultyModel.objects.all().values()
+    context={
+        'data':ob
+        }
+    temp=loader.get_template('view_faculty.html')
+    return HttpResponse(temp.render(context,request))
+def view_faculty_delete(request):
+    ob=FacultyModel.objects.all().values()
+    context={
+        'data':ob
+        }
+    temp=loader.get_template('view_faculty_delete.html')
+    return HttpResponse(temp.render(context,request))
+def delete_faculty(request,pk):
+    FacultyModel.objects.get(id=pk).delete()
+    return render(request,"delete_faculty.html")
+
+
+
+def insert_student(request):
+    context ={}# dictionary for initial data with field names as keys
+    ob_form = StudentForm(request.POST or None)
+    if ob_form.is_valid():
+        ob_form.save()
+        return HttpResponse("Data Saved")
+    context['form']= ob_form
+    return render(request, "insert_student.html", context)  
+#view employee data
+def view_student(request):
+    ob=StudentModel.objects.all().values()
+    context={
+        'data':ob
+        }
+    temp=loader.get_template('view_student.html')
+    return HttpResponse(temp.render(context,request))
+def insert_employee(request):
+    context ={}# dictionary for initial data with field names as keys
+    ob_form = EmployeeForm(request.POST or None)
+    if ob_form.is_valid():
+        ob_form.save()
+        return HttpResponse("Data Saved")
+    context['form']= ob_form
+    return render(request, "insert_employee.html", context)  
+#view employee data
+def view_employee(request):
+    ob=EmployeeModel.objects.all().values()
+    context={
+        'data':ob
+        }
+    temp=loader.get_template('view_employee.html')
+    return HttpResponse(temp.render(context,request))
+
+
+Step 10: Write HTML code in master Templates to be displayed on every page.
+<!-- myapp/templates/master.html: -->
+{%   load static     %}
+<html><head>
+<link    rel="stylesheet"     href="{%  static    'css/style1.css'   %}">
+<script src="{%   static    'js/script1.js' %}"></script>
+</head>
+<body bgcolor=pink> 
+<h1 align="center"> Welcome to Annamacharya College</h1>
+ 
+
+<div class="navbar">
+  <a href="#">Employee</a>
+  <a href="#news">Student</a>
+  <div class="dropdown">
+  <button class="dropbtn" onclick="myFunction()">Faculty
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-content" id="myDropdown">
+    <a href="{%  url   'insert_faculty'  %}">Add data</a>
+    <a href="{%  url   'view_faculty'  %}">View data</a>
+    <a href="{%  url   'view_faculty_delete'  %}">Delete data</a>
+<a href="#">Update data</a>
+<a href="#">Search data</a>
+  </div>
+  </div> 
+</div>
+{% block content %}
+
+{% endblock %}
+<p>Author:Praveen</p>
+</body>
+</html>
+
+
+
+11: Write HTML code in insert_employee Templates
+
+<!-- myapp/templates/insert_employee.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<form method="POST"   action="{% url 'insert_employee' %}" >
+    {% csrf_token %}<!-- Security token -->
+    {{ form.as_p }}<!-- Using the formset -->
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+
+
+
+12: Write HTML code in insert_faculty Templates
+<!-- myapp/templates/insert_faculty.html: -->
+
+{%   extends  "master.html"  %}
+{%  block content  %}
+<form method="POST"   action="{% url 'insert_faculty' %}" >
+    {% csrf_token %}<!-- Security token -->
+    {{ form.as_p }}<!-- Using the formset -->
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+
+13: Write HTML code in insert_student Templates
+<!-- myapp/templates/insert_student.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<form method="POST"   action="{% url 'insert_student' %}" >
+    {% csrf_token %}<!-- Security token -->
+    {{ form.as_p }}<!-- Using the formset -->
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+
+
+
+
+14: Write HTML code in view_employee Templates
+You can now use  Django  templates to  view objects in Employee.
+
+<!--  myapp/templates/view_employee.html: >
+{%   extends  "master.html"  %}
+{%  block content  %}
+<style>
+   table{        margin-top: 100px;         margin-left: 250px; }
+ </style>
+<h1>Welcome To Employee  Data</h1>
+<table border="1">
+<tr style="font-size: 20px;">
+<th>FirstName</th>
+<th>LastName</th>
+<th>Mobile</th>
+<th>Email</th>
+</tr>
+{%  for  x  in  data  %}
+<tr style="font-size: 16px;">
+
+<td>{{x.first_name}}</td>
+<td>{{x.last_name}}</td>
+<td>{{x.mobile}}</td>
+<td>{{x.email}}</td>
+
+</tr>
+{% endfor %}
+</table>
+<br>
+</form>
+ {% endblock %}
+
+
+
+15: Write HTML code in view_faculty Templates
+
+<!--  myapp/templates/view_faculty.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<style>
+   table{        margin-top: 100px;         margin-left: 250px; }
+ </style>
+<h1>Welcome To Faculty  Data</h1>
+<table border="1">
+<tr style="font-size: 20px;">
+
+<th>Name</th>
+<th>Subject</th>
+<th>Mobile</th>
+<th>Email</th>
+
+</tr>
+{%  for  x  in  data  %}
+<tr style="font-size: 16px;">
+<td>{{x.id}}</td>
+<td>{{x.name}}</td>
+<td>{{x.subject}}</td>
+<td>{{x.mobile}}</td>
+<td>{{x.email}}</td>
+
+</tr>
+{% endfor %}
+</table>
+<br>
+</form>
+ {% endblock %}
+
+
+
+
+16: Write HTML code in view_student Templates
+
+<!--  myapp/templates/view_student.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<style>
+   table{        margin-top: 100px;         margin-left: 250px; }
+ </style>
+<h1>Welcome To Student  Data</h1>
+<table border="1">
+<tr style="font-size: 20px;">
+
+<th>Name</th>
+<th>Course</th>
+<th>Ht_No</th>
+<th>Mobile</th>
+<th>Period of Validity</th>
+
+</tr>
+{%  for  x  in  data  %}
+<tr style="font-size: 16px;">
+
+<td>{{x.name}}</td>
+<td>{{x.course}}</td>
+<td>{{x.ht_no}}</td>
+<td>{{x.mobile}}</td>
+<td>{{x.pov}}</td>
+
+</tr>
+{% endfor %}
+</table>
+<br>
+</form>
+ {% endblock %}
+
+
+
+17: Write HTML code in view_faculty_delete  Templates
+<!--  myapp/templates/view_faculty_delete.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<style>
+   table{        margin-top: 100px;         margin-left: 250px; }
+ </style>
+<h1>Welcome To Faculty  Data for Deletion</h1>
+<table border="1">
+<tr style="font-size: 20px;">
+<th>Id</th>
+<th>Name</th>
+<th>Subject</th>
+<th>Mobile</th>
+<th>Email</th>
+<th>Delete</th>
+</tr>
+{%  for  x  in  data  %}
+<tr style="font-size: 16px;">
+<td>{{x.id}}</td>
+<td>{{x.name}}</td>
+<td>{{x.subject}}</td>
+<td>{{x.mobile}}</td>
+<td>{{x.email}}</td>
+<td>
+ <a href="{%  url  'delete_faculty'   pk=x.id  %}">    Delete </a>
+</td>
+</tr>
+{% endfor %}
+</table>
+<br>
+</form>
+ {% endblock %}
+
+
+18: Write HTML code in delete_faculty Templates
+<!--  myapp/templates/delete_faculty.html: -->
+{%   extends  "master.html"  %}
+{%  block content  %}
+<h1>Faculty  Data Deleted Successfully</h1>
+ {% endblock %}
+
+
+19: Write css code in style1.css
+myapp/static/css/style1.css
+
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  cursor: pointer;
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
+  background-color: red;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.show {
+  display: block;
+}
+
+
+20: Write js code in script1.js
+myapp/static/js/script1.js
+
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(e) {
+  if (!e.target.matches('.dropbtn')) {
+  var myDropdown = document.getElementById("myDropdown");
+    if (myDropdown.classList.contains('show')) {
+      myDropdown.classList.remove('show');
+    }
+  }
+}
+
+
+
+
+Step 21: Define URLs
+Map URLs to views in myapp/urls.py:
+(You need to create urls.py in your app )
+# myapp/urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+   path('',views.display_home,name='display_home'),
+   path('insert_employee/',views.insert_employee, name='insert_employee'),
+   path('view_employee/', views.view_employee,  name = 'view_employee'),
+   path('insert_faculty/',views.insert_faculty, name='insert_faculty'),
+   path('view_faculty/', views.view_faculty,  name = 'view_faculty'),
+   path('insert_student/',views.insert_student, name='insert_student'),
+   path('view_student/', views.view_student,  name = 'view_student'),
+   path('view_faculty_delete/', views.view_faculty_delete,  name = 'view_faculty_delete'),
+   path('delete_faculty/<int:pk>', views.delete_faculty,
+           name = 'delete_faculty'),
+   ]
+
+Step 22: Define URLsInclude these URLs in your project's urls.py:
+# myproject/urls.py
+from django.contrib import admin
+from django.urls import path, include
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('myapp.urls')),
+]
+
+Step 23: Run Your Django Development Server
+Finally, start the Django development server and navigate to 
+
+python manage.py runserver
+
+http://localhost:8000
